@@ -6,7 +6,7 @@ var HelloWorldLayer = cc.Layer.extend({
         this._super();
         var size = cc.winSize;
 
-        /**
+        /***********************************
          *
          * Global and local coordinate system
 
@@ -39,17 +39,45 @@ var HelloWorldLayer = cc.Layer.extend({
         });
          */
 
+        /**************************************
+         *
+         * Sine and cosine usage
+
+         var dot = new cc.DrawNode();
+         dot.drawDot(cc.p(0, 0), 10, cc.color(255, 255, 255, 255));
+         this.addChild(dot);
+
+         dot.setPositionX(size.width / 2);
+         dot.setPositionY(size.height / 2);
+         var angle = 0;
+         this.schedule(function () {
+         dot.setPositionX(size.width / 2 + Math.sin(angle) * 100);
+         dot.setPositionY(size.height / 2 + Math.cos(angle) * 150);
+         angle += 0.1;
+         });
+         */
+
+        var direction = cc.p(cc.randomMinus1To1(), cc.randomMinus1To1());
+        cc.pNormalize(direction);
+
         var dot = new cc.DrawNode();
         dot.drawDot(cc.p(0, 0), 10, cc.color(255, 255, 255, 255));
         this.addChild(dot);
 
         dot.setPositionX(size.width / 2);
         dot.setPositionY(size.height / 2);
-        var angle = 0;
+
         this.schedule(function () {
-            dot.setPositionX(size.width / 2 + Math.sin(angle) * 100);
-            dot.setPositionY(size.height / 2 + Math.cos(angle) * 150);
-            angle += 0.1;
+            var p = dot.getPosition();
+
+            if(p.x < 0 || p.x > size.width) {
+                direction.x *= -1;
+            } else if(p.y < 0 || p.y > size.height) {
+                direction.y *= -1;
+            }
+
+            dot.setPositionX(p.x + direction.x * 10);
+            dot.setPositionY(p.y + direction.y * 10);
         });
 
         return true;
